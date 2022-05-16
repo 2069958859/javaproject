@@ -156,7 +156,7 @@ public class Chessboard extends JComponent {
         if (chess1 instanceof RookChessComponent && chess1.getChessColor().equals(ChessColor.WHITE)) {
             staywr = false;
         }
-
+        
 
         record(row1, col1, row2, col2);
         AtomicInteger count = new AtomicInteger(0);
