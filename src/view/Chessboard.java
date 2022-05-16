@@ -214,6 +214,8 @@ public class Chessboard extends JComponent {
         return false;
     }
 
+
+
     private void record(int fromx, int fromy, int tox, int toy) {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < 8; i++) {
