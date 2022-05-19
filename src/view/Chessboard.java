@@ -42,11 +42,12 @@ public class Chessboard extends JComponent {
     public static void setX(int x) {
         Chessboard.x = x;
     }
+//     static int huiqicishu=
 
     private static final int CHESSBOARD_SIZE = 8;
 
     private final ChessComponent[][] chessComponents = new ChessComponent[CHESSBOARD_SIZE][CHESSBOARD_SIZE];
-    private static ChessColor currentColor = ChessColor.WHITE;
+    public static ChessColor currentColor = ChessColor.WHITE;
 
     public ClickController getClickController() {
         return clickController;
@@ -60,6 +61,8 @@ public class Chessboard extends JComponent {
     public int getCHESS_SIZE() {
         return CHESS_SIZE;
     }
+
+    public boolean isDead;
 
     public boolean staybk = true;
     public boolean staywk = true;
@@ -156,7 +159,7 @@ public class Chessboard extends JComponent {
         if (chess1 instanceof RookChessComponent && chess1.getChessColor().equals(ChessColor.WHITE)) {
             staywr = false;
         }
-        
+
 
         record(row1, col1, row2, col2);
         AtomicInteger count = new AtomicInteger(0);
@@ -165,12 +168,15 @@ public class Chessboard extends JComponent {
         changelabel();
         chess1.repaint();
         chess2.repaint();
-        if(isjiangsi()){
-
+        if (isjiangsi()) {
+            isDead = true;
+            ChessGameFrame.dead(warning);
         }
     }
 
-    public boolean otherchesscanmoveto(ChessComponent chess2) {
+    String warning = "You win!";
+
+    public boolean otherChessCanMoveTo(ChessComponent chess2) {
         ChessComponent[][] chessComponent = new ChessComponent[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -184,6 +190,42 @@ public class Chessboard extends JComponent {
             }
         }
         return false;
+    }
+
+    public boolean kingCanMoveTo(ChessComponent king) {//king能挪走来躲避
+        int inix = king.getChessboardPoint().getX();
+        int iniy = king.getChessboardPoint().getY();
+        ChessComponent[][] cc = getChessComponents();
+        int finx1 = inix + 1;
+        int finx2 = inix - 1;
+        int finy1 = iniy + 1;
+        int finy2 = iniy - 1;
+        if (inix < 0 || iniy - 1 > 7 || inix > 7 || iniy - 1 < 0 || !(cc[inix][iniy - 1] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix][iniy - 1].getChessColor() || otherChessCanMoveTo(cc[inix][iniy - 1])) {
+            return false;
+        }
+        if (inix < 0 || iniy + 1 > 7 || inix > 7 || iniy + 1 < 0 || !(cc[inix][iniy + 1] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix][iniy + 1].getChessColor() || otherChessCanMoveTo(cc[inix][iniy + 1])) {
+            return false;
+        }
+        if (inix - 1 < 0 || iniy > 7 || inix - 1 > 7 || iniy < 0 || !(cc[inix - 1][iniy] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix - 1][iniy].getChessColor() || otherChessCanMoveTo(cc[inix - 1][iniy])) {
+            return false;
+        }
+        if (inix + 1 < 0 || iniy > 7 || inix + 1 > 7 || iniy < 0 || !(cc[inix + 1][iniy] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix + 1][iniy].getChessColor() || otherChessCanMoveTo(cc[inix + 1][iniy])) {
+            return false;
+        }
+        if ( iniy + 1 > 7 || inix + 1 > 7 || iniy + 1 < 0 || !(cc[inix + 1][iniy + 1] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix + 1][iniy + 1].getChessColor() || otherChessCanMoveTo(cc[inix + 1][iniy + 1])) {
+            return false;
+        }
+        if (inix - 1 < 0 || iniy + 1 > 7 || inix - 1 > 7 || iniy + 1 < 0 || !(cc[inix - 1][iniy + 1] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix - 1][iniy + 1].getChessColor() || otherChessCanMoveTo(cc[inix - 1][iniy + 1])) {
+            return false;
+        }
+        if (inix + 1 < 0 || iniy - 1 > 7 || inix + 1 > 7 || iniy - 1 < 0 || !(cc[inix + 1][iniy - 1] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix + 1][iniy - 1].getChessColor() || otherChessCanMoveTo(cc[inix + 1][iniy - 1])) {
+            return false;
+        }
+        if (inix - 1 < 0 || iniy - 1 > 7 || inix - 1 > 7 || iniy - 1 < 0 || !(cc[inix - 1][iniy - 1] instanceof EmptySlotComponent) || king.getChessColor() == cc[inix - 1][iniy - 1].getChessColor() || otherChessCanMoveTo(cc[inix - 1][iniy - 1])) {
+            return false;
+        }
+
+        return true;
     }
 
     public boolean isjiangsi() {
@@ -202,7 +244,7 @@ public class Chessboard extends JComponent {
                             if (!(chessComponent[k][l] instanceof EmptySlotComponent)) {
                                 chess = chessComponent[k][l];
                                 //不同颜色，有棋子可以移动到王那里；没有棋子可以吃掉这个攻击的棋子；王能走的位置都有棋子可以到达
-                                if (chess.getChessColor() != king.getChessColor() && chess.canMoveTo(chessComponent, king.getChessboardPoint()) && !otherchesscanmoveto(chess) ) {
+                                if (chess.getChessColor() != king.getChessColor() && chess.canMoveTo(chessComponent, king.getChessboardPoint()) && !otherChessCanMoveTo(chess)) {
                                     return true;
                                 }
                             }
@@ -213,7 +255,6 @@ public class Chessboard extends JComponent {
         }
         return false;
     }
-
 
 
     private void record(int fromx, int fromy, int tox, int toy) {

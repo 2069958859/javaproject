@@ -3,11 +3,9 @@ package view;
 import Music.Music;
 import controller.ClickController;
 import controller.GameController;
-import javafx.stage.FileChooser;
 import model.*;
 import model.ChessComponent;
 import javax.swing.JFileChooser;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.*;
 import java.awt.*;
@@ -48,6 +46,8 @@ public class ChessGameFrame extends JFrame {
     static JButton button4 = new JButton("Load");
     static JButton button5 = new JButton("Music");
     static JButton button6 = new JButton("Change Skin");
+    static JButton button10 = new JButton("Playback");
+
     static  JLabel im=new JLabel();
     static JButton button7=new JButton("open");
     static File file;
@@ -72,6 +72,7 @@ public class ChessGameFrame extends JFrame {
         addloadLabel();
 
         addFileChooser();
+        playback();
 
         changeSkin();
         addBackground();
@@ -140,24 +141,25 @@ public class ChessGameFrame extends JFrame {
         button.addActionListener((e) -> {
             x++;
             n.getAndIncrement();
-//            if (n.get() == gameController.getChessboard().huiqicishu) {
-//                gameController.getChessboard().initall();
-//            } else {
-            gameController.getChessboard().getLastChessBoard(n.get() + x);
-            recordchessboard.add(Chessboard.getRecordchessboard().get(recordchessboard.size()-n.get()-x));
-            if(getCurrentColor()==ChessColor.BLACK){
-                setCurrentColor(ChessColor.WHITE);
-                statusLabel.setText("White's Round");
-            }
-            else {
-                setCurrentColor(ChessColor.BLACK);
-                statusLabel.setText("Black's Round");
+            if (n.get() == getRecordchessboard().size()) {
+                gameController.getChessboard().initall();
+                repaint();
+            } else {
+                gameController.getChessboard().getLastChessBoard(n.get() + x);
+                recordchessboard.add(Chessboard.getRecordchessboard().get(recordchessboard.size() - n.get() - x));
+                if (getCurrentColor() == ChessColor.BLACK) {
+                    setCurrentColor(ChessColor.WHITE);
+                    statusLabel.setText("White's Round");
+                } else {
+                    setCurrentColor(ChessColor.BLACK);
+                    statusLabel.setText("Black's Round");
 
-            }
+                }
 //            changecurrentcolor();
 //            changelabel();
-            repaint();
+                repaint();
 //            }
+            }
         });
     }
 
@@ -167,7 +169,7 @@ public class ChessGameFrame extends JFrame {
             //JOptionPane.
             System.out.println("save");
             ArrayList<String> transferToText = new ArrayList<>();
-            transferToText = gameController.getChessboard().getRecordchessboard();
+            transferToText = getRecordchessboard();
             //this is an auto filer format: save1.txt 1represent a positive number
             writeFiles(transferToText);
 
@@ -194,6 +196,24 @@ public class ChessGameFrame extends JFrame {
                 this.repaint();
             }});
     }
+    private void playback() {
+        button10.setLocation(HEIGHT, HEIGHT/10+230);
+        button10.setSize(200, 40);
+        button10.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button10);
+        button10.addActionListener((e) ->{
+           Thread newTry = new Thread(new MyRunable(this));
+           newTry.start();
+
+//           if(currentColor==ChessColor.WHITE){
+//               showwhite();
+//           }
+//           else {
+//               showblack();
+//           }
+//           repaint();
+            });
+}
 
 //    private void addLoadButton() {
 //
@@ -237,6 +257,10 @@ public class ChessGameFrame extends JFrame {
         im.setOpaque(true);
         add(im);
     }
+    public static void dead(String warning){
+        JOptionPane j=new JOptionPane();
+        j.showMessageDialog(null,warning);
+    }
 
     private void changeSkin(){
         button6.setLocation(HEIGHT, HEIGHT / 10 + 420);
@@ -271,6 +295,11 @@ public class ChessGameFrame extends JFrame {
                 button7.setBackground(Color.green.darker());
                 button7.setOpaque(true);
                 button7.setBorderPainted(true);
+                button10.setBackground(Color.green.darker());
+                button10.setOpaque(true);
+                button10.setBorderPainted(true);
+
+
                 ImageIcon icon2=new ImageIcon("./images/img2.jpg");
                 im.setIcon(icon2);
                 icon2.setImage(icon2.getImage().getScaledInstance(1000,750 , Image.SCALE_DEFAULT));
@@ -296,6 +325,9 @@ public class ChessGameFrame extends JFrame {
                 button6.setBorderPainted(true);
                 button7.setOpaque(false);
                 button7.setBorderPainted(true);
+                button10.setOpaque(false);
+                button10.setBorderPainted(true);
+
                 ImageIcon icon=new ImageIcon("./images/img.png");
                 im.setIcon(icon);
 //        icon.setImage(icon.getImage().getScaledInstance(1000,750 , Image.SCALE_DEFAULT));
@@ -428,6 +460,10 @@ public class ChessGameFrame extends JFrame {
         statusLabel.setText("White's Round");
 
     }
+    public static void showblack() {
+        statusLabel.setText("Black's Round");
+
+    }
 
 
 //    public void addFrameButton(){
@@ -454,7 +490,7 @@ public class ChessGameFrame extends JFrame {
 
         button7.addActionListener(e -> {
             // TODO Auto-generated method stub
-            JFileChooser jfc=new JFileChooser("C:\\Users\\20699\\Desktop\\proj的副本");
+            JFileChooser jfc=new JFileChooser("C:\\Users\\20699\\Desktop\\javaproject");
             jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES );
             jfc.showDialog(new JLabel(), "选择");
             file=jfc.getSelectedFile();
@@ -464,7 +500,11 @@ public class ChessGameFrame extends JFrame {
         public void Time(){
         time();
         }
+
+    public GameController getGameController() {
+        return gameController;
     }
+}
 
 
 

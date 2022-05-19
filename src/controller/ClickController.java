@@ -8,7 +8,13 @@ public class ClickController {
     private final Chessboard chessboard;
     private ChessComponent first;
     public static int n = 0;
+    public boolean choose=false;
+
     Music audioPlayWave2 = new Music("aa.wav");
+
+    public static void chosen(){
+
+    }
     public ClickController(Chessboard chessboard) {
         this.chessboard = chessboard;
     }
@@ -47,6 +53,9 @@ public class ClickController {
     private boolean handleFirst(ChessComponent chessComponent) {
         return chessComponent.getChessColor() == chessboard.getCurrentColor();
     }
+
+
+
 
     /**
      * @param chessComponent first棋子目标移动到的棋子second

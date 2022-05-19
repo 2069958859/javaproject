@@ -110,7 +110,7 @@ public abstract class ChessComponent extends JComponent {
         super.processMouseEvent(e);
         if(e.getID()==MouseEvent.MOUSE_ENTERED){
             Graphics g=getGraphics();
-            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.3f));
+            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.4f));
             g.setColor(Color.GREEN);
            g.fillRect(0,0,this.getWidth(),this.getHeight());
         }
@@ -153,6 +153,8 @@ public abstract class ChessComponent extends JComponent {
         Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
         g.setColor(squareColor);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+
         if(ChessGameFrame.isChanged){
             super.paintComponents(g);
             Color squareColor2 = BACKGROUND_COLORS2[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
